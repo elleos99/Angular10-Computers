@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
 import { NewComputerComponent } from './new-computer.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +7,8 @@ import { ComputerService } from 'src/app/services/computer.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { Computer } from 'src/app/model/computer.model';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('NewComputerComponent', () => {
   let component: NewComputerComponent;
@@ -23,12 +24,16 @@ describe('NewComputerComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [NewComputerComponent],
       imports: [
+        RouterTestingModule.withRoutes([{ path: 'computers', redirectTo: '' }]),
         MatInputModule,
         MatButtonModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
       ],
-      providers: [{ provide: ComputerService, useValue: computersrvSpy }],
+      providers: [
+        { provide: ComputerService, useValue: computersrvSpy },
+        { provide: Router, useValue: routerSpy },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewComputerComponent);
@@ -41,15 +46,22 @@ describe('NewComputerComponent', () => {
   });
 
   it('should save Computer', () => {
-    computersrvSpy.saveComputers.and.returnValue(of([]));
-
     component.formComputer?.setValue({
       brand: 'Lenovo',
       model: 'H1M1',
     });
+    computersrvSpy.saveComputers.and.returnValue(of([]));
 
-    // component.saveComputer();
+    component.saveComputer();
 
-    // expect(routerSpy.navigate).toHaveBeenCalledWith(['/computers']);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/computers']);
+  });
+
+  it('should saveComputer error', () => {
+    computersrvSpy.saveComputers.and.returnValue(
+      throwError(() => 'error al guardar')
+    );
+
+    expect(component.saveComputer()).toThrowError;
   });
 });
