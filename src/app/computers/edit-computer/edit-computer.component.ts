@@ -31,12 +31,15 @@ export class EditComputerComponent {
     this.route.params.subscribe({
       next: (params) => {
         this.computerId = params['id'];
+        this.computerDefault();
       },
       error: (err) => {
         alert('Lo sentimos, ocurrio un error');
       },
     });
+  }
 
+  computerDefault() {
     let ID = this.computerId;
     this.computersrv.getComputer(ID).subscribe({
       next: (lastComp) => {

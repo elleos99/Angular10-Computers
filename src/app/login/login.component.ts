@@ -32,15 +32,17 @@ export class LoginComponent {
     const req = this.formLogin?.value as LoginRequest;
     this.loginsrv.login(req).subscribe({
       next: (response) => {
-        console.log('respuesta', response);
+        // console.log('respuesta', response);
         this.utilsrv.saveToken(response.token);
         this.router.navigate(['home']);
       },
       error: (err) => {
-        console.log('error', err);
+        this.isLoading = false;
+        // console.log('error', err);
       },
       complete: () => {
-        console.log('completado');
+        this.isLoading = false;
+        // console.log('completado');
       },
     });
     console.log('Ya se envió la petición');

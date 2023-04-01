@@ -6,6 +6,9 @@ import { LoginRequest, LoginResponse } from '../model/login.model';
   providedIn: 'root',
 })
 export class LoginService {
+  // LoginService(req: LoginRequest) {
+  //   throw new Error('Method not implemented.');
+  // }
   constructor(private http: HttpClient) {}
 
   login(req: LoginRequest) {
